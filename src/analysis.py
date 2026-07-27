@@ -1,0 +1,35 @@
+from transform import merge_df
+import pandas as pd
+import plotly.express as px
+
+def analyser():
+    df = merge_df()
+    if df is not None:
+        # Bar chart based on the number of colors of the stations
+        df_num_colors = df["color"].value_counts().reset_index()
+        fig = px.bar(x= df_num_colors["color"], y= df_num_colors["count"],
+        labels={"x": "Color", "y": "Número de estaciones"})
+        # fig.show()
+
+        # Histogram based on the number of bikes in different stations
+        fig2 = px.histogram(df, x="num_bikes_available")
+        # fig2.show()
+
+        # Bar chart based on the number of ebikes vs mechanical ones
+        df_types_of_bikes = pd.DataFrame({"type" : ["mechanical", "ebike"], "count" : [df["mechanical"].sum(), df["ebike"].sum()]})
+        fig3 = px.bar(df_types_of_bikes, x="type", y="count")
+        # fig3.show()
+
+        # Scatter plot between "num_bikes_available" and "num_docks_available"
+        fig4 = px.scatter(df, x="num_bikes_available", y="num_docks_available")
+        # fig4.show()
+
+        # Map of Barcelona with all the stations and coloured based on bike availability
+        fig5 = px.scatter_map(df, lat="lat", lon="lon", color="color", size="capacity_size", 
+        color_discrete_map={"green": "green", "red": "red", "grey": "black"}, size_max=15, zoom=10,
+        hover_data={"lat":False, "lon":False, "color":False, "capacity_size":False, "capacity":True, "num_bikes_available":True},
+        hover_name=("name"), labels={"num_bikes_available" : "Bicis disponibles", "capacity" : "Capacidad"})
+        fig5.show()
+
+    else:
+        return None
