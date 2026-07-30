@@ -14,7 +14,7 @@ def get_data():
         "Authorization" : my_token
     }
     try:
-        response_data = requests.get(api_address_data, headers=my_header)
+        response_data = requests.get(api_address_data, headers=my_header, timeout=15)
 
         if response_data.status_code == 200:
             json_bicing = response_data.json()
@@ -37,7 +37,7 @@ def get_locations():
         "Authorization" : my_token
     }
     try:
-        response_location = requests.get(api_address_locations, headers=my_header)
+        response_location = requests.get(api_address_locations, headers=my_header, timeout=15)
 
         if response_location.status_code == 200:
             return response_location.json()
