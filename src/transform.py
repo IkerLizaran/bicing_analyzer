@@ -77,7 +77,7 @@ def df_to_csv(df, file_address):
 
 def save_snapshot(df):
     if df is not None:
-        df_to_csv(df, "data/bicing_data.csv")
+        df_to_csv(df, os.path.join(os.path.dirname(__file__), "..", "data", "bicing_data.csv"))
         logging.info("Data saved correctly")
     else:
         logging.error("Snapshot not saved: merge_df returned no data")

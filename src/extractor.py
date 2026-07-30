@@ -1,13 +1,12 @@
 import requests
 from dotenv import load_dotenv
 import os
-import pandas as pd
 import logging
 
 def get_data():
     api_address_data = "https://opendata-ajuntament.barcelona.cat/data/dataset/estat-estacions-bicing/resource/1b215493-9e63-4a12-8980-2d7e0fa19f85/download"
 
-    load_dotenv()
+    load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env"))
     my_token = os.getenv("TOKEN_BICING")
 
     my_header = {
@@ -30,7 +29,7 @@ def get_data():
 def get_locations():
     api_address_locations = "https://opendata-ajuntament.barcelona.cat/data/ca/dataset/informacio-estacions-bicing/resource/f60e9291-5aaa-417d-9b91-612a9de800aa/download"
 
-    load_dotenv()
+    load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env"))
 
     my_token = os.getenv("TOKEN_BICING")
 
@@ -43,7 +42,7 @@ def get_locations():
         if response_location.status_code == 200:
             return response_location.json()
         else:
-            logging.error(f"Bicing data API returned status code {response_location.status_code}")
+            logging.error(f"Bicing locations API returned status code {response_location.status_code}")
             return None
     except Exception as error:
         logging.error(f"The following exception ocurred: {error}")
