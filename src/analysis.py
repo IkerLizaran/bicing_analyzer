@@ -1,6 +1,7 @@
 from transform import merge_df
 import pandas as pd
 import plotly.express as px
+import logging
 
 # Bar chart based on the number of colors of the stations
 def plot_colors(df):
@@ -39,4 +40,5 @@ def analyser():
     if df is not None:
         plot_map(df)
     else:
+        logging.warning("Skipping the plot analysis: merge_df() returned no data")
         return None
