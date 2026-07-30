@@ -1,11 +1,10 @@
 from logger_config import setup_logging
-from analysis import analyser
-from transform import merge_df
+from transform import merge_df, save_snapshot
 
 setup_logging()
 
 def main():
     df = merge_df()
-    analyser(df)
+    save_snapshot(df)
 
 main()

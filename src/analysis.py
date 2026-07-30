@@ -35,8 +35,7 @@ def plot_map(df):
     fig5.show()
 
 
-def analyser():
-    df = merge_df()
+def analyser(df):
     if df is not None:
         plot_map(df)
     else:

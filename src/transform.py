@@ -75,14 +75,13 @@ def df_to_csv(df, file_address):
     else:
         df.to_csv(file_address, mode="a", header=True, index=False)
 
-def save_snapshot():
-    df_final = merge_df()
-    if df_final is not None:
-        df_to_csv(df_final, "data/bicing_data.csv")
+def save_snapshot(df):
+    if df is not None:
+        df_to_csv(df, "data/bicing_data.csv")
         logging.info("Data saved correctly")
     else:
         logging.error("Snapshot not saved: merge_df returned no data")
-    return df_final
+    return df
 
 def merge_df():
     df_data = transform_data()
