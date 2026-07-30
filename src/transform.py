@@ -1,5 +1,7 @@
 import extractor as ex
 import pandas as pd
+from datetime import datetime
+import os
 
 def colors(row):
     if (row["status"] != "IN_SERVICE") or (row["is_renting"] == False):
@@ -27,6 +29,7 @@ def transform_data():
             df = df.drop("num_bikes_available_types", axis=1)
 
             df["color"] = df.apply(colors, axis=1)
+            df["timestamp"] = datetime.now()
 
             # ALERTS FOR NEGATIVE NUMBERS
             for name_column in ["num_bikes_available", "num_docks_available", "ebike", "mechanical"]:
@@ -53,7 +56,7 @@ def transform_locations():
                 if df_locations[name_column].min() < 0:
                     print(f"Alert: negative values on '{name_column}' column at locations df")
 
-            df_locations["capacity_size"] = df.apply(capacity_size, axis=1)
+            df_locations["capacity_size"] = df_locations.apply(capacity_size, axis=1)
 
             return df_locations
         
@@ -63,8 +66,22 @@ def transform_locations():
     else:
         return None
 
+def df_to_csv(df, file_address):
+    if os.path.exists(file_address):
+        df.to_csv(file_address, mode="a", header=False, index=False)
+    else:
+        df.to_csv(file_address, mode="a", header=True, index=False)
+
+def save_snapshot():
+    df_final = merge_df()
+    if df_final is not None:
+        df_to_csv(df_final, "data/bicing_data.csv")
+    return df_final
+
 def merge_df():
     df_data = transform_data()
     df_locations = transform_locations()
+    if df_data is None or df_locations is None:
+        return None
     df_final = pd.merge(df_data, df_locations, on="station_id")
     return df_final
