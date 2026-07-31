@@ -18,12 +18,16 @@ def get_data():
             response_data = requests.get(api_address_data, headers=my_header, timeout=15)
 
             if response_data.status_code == 200:
-                json_bicing = response_data.json()
-                return json_bicing
+                try:
+                    return response_data.json()
+                except ValueError:
+                    logging.warning("response_data couldn't return json format") 
             else:
                 logging.warning(f"Bicing data API returned status code {response_data.status_code}")
-                if attempt < 2:
-                    time.sleep(5)
+            
+            if attempt < 2:
+                time.sleep(5)
+
         logging.error("Bicing data API is not responding")
         return None
         
@@ -46,11 +50,16 @@ def get_locations():
             response_location = requests.get(api_address_locations, headers=my_header, timeout=15)
 
             if response_location.status_code == 200:
-                return response_location.json()
+                try:
+                    return response_location.json()
+                except ValueError:
+                    logging.warning("response_location couldn't return json format")
             else:
                 logging.warning(f"Bicing locations API returned status code {response_location.status_code}")
-                if attempt < 2:
-                    time.sleep(5)
+
+            if attempt < 2:
+                time.sleep(5)
+
         logging.error("Bicing locations API is not responding")
         return None
         
