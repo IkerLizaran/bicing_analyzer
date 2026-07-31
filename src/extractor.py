@@ -2,6 +2,7 @@ import requests
 from dotenv import load_dotenv
 import os
 import logging
+import time
 
 def get_data():
     api_address_data = "https://opendata-ajuntament.barcelona.cat/data/dataset/estat-estacions-bicing/resource/1b215493-9e63-4a12-8980-2d7e0fa19f85/download"
@@ -13,15 +14,19 @@ def get_data():
         "Authorization" : my_token
     }
     try:
-        response_data = requests.get(api_address_data, headers=my_header, timeout=15)
+        for attempt in range(3):
+            response_data = requests.get(api_address_data, headers=my_header, timeout=15)
 
-        if response_data.status_code == 200:
-            json_bicing = response_data.json()
-            return json_bicing
-        else:
-            logging.error(f"Bicing data API returned status code {response_data.status_code}")
-            return None
-
+            if response_data.status_code == 200:
+                json_bicing = response_data.json()
+                return json_bicing
+            else:
+                logging.warning(f"Bicing data API returned status code {response_data.status_code}")
+                if attempt < 2:
+                    time.sleep(5)
+        logging.error("Bicing data API is not responding")
+        return None
+        
     except Exception as error:
         logging.error(f"The following exception ocurred: {error}")
         return None
@@ -37,13 +42,18 @@ def get_locations():
         "Authorization" : my_token
     }
     try:
-        response_location = requests.get(api_address_locations, headers=my_header, timeout=15)
+        for attempt in range(3):
+            response_location = requests.get(api_address_locations, headers=my_header, timeout=15)
 
-        if response_location.status_code == 200:
-            return response_location.json()
-        else:
-            logging.error(f"Bicing locations API returned status code {response_location.status_code}")
-            return None
+            if response_location.status_code == 200:
+                return response_location.json()
+            else:
+                logging.warning(f"Bicing locations API returned status code {response_location.status_code}")
+                if attempt < 2:
+                    time.sleep(5)
+        logging.error("Bicing locations API is not responding")
+        return None
+        
     except Exception as error:
         logging.error(f"The following exception ocurred: {error}")
         return None
