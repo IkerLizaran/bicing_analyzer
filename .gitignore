@@ -1,13 +1,10 @@
-# Entorno virtual (pesa mucho y no es tu código)
 venv/
 .venv/
 
-# Archivos de datos locales (la base de datos y los CSVs no se suben a GitHub)
 data/
 *.csv
 *.sqlite3
 
-# Basura interna de Python
 __pycache__/
 *.pyc
 
