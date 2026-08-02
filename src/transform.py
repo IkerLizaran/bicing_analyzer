@@ -3,6 +3,8 @@ import pandas as pd
 from datetime import datetime
 import os
 import logging
+from dotenv import load_dotenv
+from sqlalchemy import create_engine
 
 def colors(row):
     if (row["status"] != "IN_SERVICE") or (row["is_renting"] == False):
@@ -82,6 +84,25 @@ def save_snapshot(df):
     else:
         logging.error("Snapshot not saved: merge_df returned no data")
     return df
+
+def save_to_db(df):
+    load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env"))
+    database_url = os.getenv("DATABASE_URL")
+
+    if database_url is None:
+        logging.error("DATABASE_URL not found in .env")
+        return None
+
+    try:
+        columns_bd = ["station_id", "num_bikes_available", "num_docks_available", "mechanical", "ebike", "status", "color", "capacity", "name", "lat", "lon", "timestamp"]
+        df_reduced = df[columns_bd]
+        engine = create_engine(database_url)
+        df_reduced.to_sql("bicing_snapshots", con=engine, if_exists="append", index=False)
+        logging.info("Data saved to database correctly")
+
+    except Exception as error:
+        logging.error(f"Failed to save data to database: {error}")
+
 
 def merge_df():
     df_data = transform_data()
