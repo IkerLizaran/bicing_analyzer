@@ -9,6 +9,9 @@ def get_data():
 
     load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env"))
     my_token = os.getenv("TOKEN_BICING")
+    if my_token is None:
+        logging.error("TOKEN_BICING not found in .env")
+        return None
 
     my_header = {
         "Authorization" : my_token
@@ -41,6 +44,9 @@ def get_locations():
     load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env"))
 
     my_token = os.getenv("TOKEN_BICING")
+    if my_token is None:
+        logging.error("TOKEN_BICING not found in .env")
+        return None
 
     my_header = {
         "Authorization" : my_token
