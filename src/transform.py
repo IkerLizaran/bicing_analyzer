@@ -97,6 +97,10 @@ def save_snapshot(df):
     return df
 
 def save_to_db(df):
+    if df is None:
+        logging.error("No data to save to database")
+        return
+
     load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env"))
     database_url = os.getenv("DATABASE_URL")
 
