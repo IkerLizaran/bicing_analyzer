@@ -9,10 +9,22 @@ from sqlalchemy import create_engine
 def colors(row):
     if (row["status"] != "IN_SERVICE") or (row["is_renting"] == False):
         return "grey"
-    elif row["num_bikes_available"] == 0:
+
+    if row["capacity"] == 0:
+        return "grey"
+    
+    ratio = row["num_bikes_available"] / row["capacity"]
+    
+    if ratio == 0:
         return "red"
+    elif ratio <= 0.2:
+        return "orange"
+    elif ratio <= 0.5:
+        return "yellow"
+    elif ratio <= 0.75:
+        return "clear green"
     else:
-        return "green"
+        return "dark green"
 
 def capacity_size(row):
     if (row["capacity"] <= 0):
@@ -31,7 +43,6 @@ def transform_data():
             df = pd.concat([df, df_types], axis=1)
             df = df.drop("num_bikes_available_types", axis=1)
 
-            df["color"] = df.apply(colors, axis=1)
             df["timestamp"] = datetime.now()
 
             # ALERTS FOR NEGATIVE NUMBERS
@@ -116,4 +127,5 @@ def merge_df():
         return None
     
     df_final = pd.merge(df_data, df_locations, on="station_id")
+    df_final["color"] = df_final.apply(colors, axis=1)
     return df_final

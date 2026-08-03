@@ -28,7 +28,15 @@ def plot_scatter(df):
 # Map of Barcelona with all the stations and coloured based on bike availability
 def plot_map(df):
     fig5 = px.scatter_map(df, lat="lat", lon="lon", color="color", size="capacity_size", 
-    color_discrete_map={"green": "green", "red": "red", "grey": "black"}, size_max=15, zoom=10,
+    color_discrete_map={
+        "grey": "grey",
+        "red": "red",
+        "orange": "orange",
+        "yellow": "gold",
+        "clear green": "lightgreen",
+        "dark green": "darkgreen"
+    }, 
+    size_max=15, zoom=10,
     hover_data={"lat":False, "lon":False, "color":False, "capacity_size":False, "capacity":True, "num_bikes_available":True},
     hover_name=("name"), labels={"num_bikes_available" : "Bicis disponibles", "capacity" : "Capacidad"})
     fig5.show()
